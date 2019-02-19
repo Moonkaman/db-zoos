@@ -71,7 +71,7 @@ server.delete('/api/zoos/:id', (req, res) => {
         res.status(404).json({errorMessage: 'The Zoo you tried to delete was not found'});
       }
     })
-    .catch(err => res.status(500).json({errorMessage: 'Could not update the specified zoo at this time', error: err}));
+    .catch(err => res.status(500).json({errorMessage: 'Could not delete the specified zoo at this time', error: err}));
 })
 
 //----------------------------------------- Bears Endpoints --------------------------------------------\\
@@ -119,6 +119,20 @@ server.put('/api/bears/:id', (req, res) => {
     res.status(400).json({errorMessage: 'Please provide a name'})
   }
 })
+
+server.delete('/api/bears/:id', (req, res) => {
+  db('bears').where({id: req.params.id}).del()
+    .then(count => {
+      console.log(count);
+      if(count > 0) {
+        res.status(204).end();
+      } else {
+        res.status(404).json({errorMessage: 'The Bear you tried to delete was not found'});
+      }
+    })
+    .catch(err => res.status(500).json({errorMessage: 'Could not delete the specified bear at this time', error: err}));
+})
+
 
 const port = 3300;
 server.listen(port, function() {
