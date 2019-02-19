@@ -102,6 +102,24 @@ server.post('/api/bears', (req, res) => {
   }
 })
 
+server.put('/api/bears/:id', (req, res) => {
+  if(req.body.name){
+    db('bears').where({id: req.params.id}).update(req.body)
+      .then(count => {
+        if(count > 0) {
+          db('bears').where({id: req.params.id}).first()
+            .then(updatedBear => res.status(200).json(updatedBear))
+            .catch(err => res.status(500).json({errorMessage: 'Could not retrieve the updated bear at this time', error: err}));
+        } else {
+          res.status(404).json({errorMessage: 'The Bear you tried to update was not found'});
+        }
+      })
+      .catch(err => res.status(500).json({errorMessage: 'Could not update the specified bear at this time', error: err}));
+  } else {
+    res.status(400).json({errorMessage: 'Please provide a name'})
+  }
+})
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
