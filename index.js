@@ -82,6 +82,12 @@ server.get('/api/bears', (req, res) => {
     .catch(err => res.status(500).json({errorMessage: 'Could not retrieve the list of bears at this time', error: err}));
 })
 
+server.get('/api/bears/:id', (req, res) => {
+  db('bears').where({id: req.params.id}).first()
+    .then(bear => res.status(200).json(bear))
+    .catch(err => res.status(500).json({errorMessage: 'Could not retrieve the specified bear at this time', error: err}));
+})
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
