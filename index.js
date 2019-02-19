@@ -51,12 +51,27 @@ server.put('/api/zoos/:id', (req, res) => {
           db('zoos').where({id: req.params.id}).first()
             .then(updatedZoo => res.status(200).json(updatedZoo))
             .catch(err => res.status(500).json({errorMessage: 'Could not retrieve the updated zoo at this time', error: err}));
+        } else {
+          res.status(404).json({errorMessage: 'The Zoo you tried to update was not found'});
         }
       })
       .catch(err => res.status(500).json({errorMessage: 'Could not update the specified zoo at this time', error: err}));
   } else {
     res.status(400).json({errorMessage: 'Please provide a name'})
   }
+})
+
+server.delete('/api/zoos/:id', (req, res) => {
+  db('zoos').where({id: req.params.id}).del()
+    .then(count => {
+      console.log(count);
+      if(count > 0) {
+        res.status(204).end();
+      } else {
+        res.status(404).json({errorMessage: 'The Zoo you tried to delete was not found'});
+      }
+    })
+    .catch(err => res.status(500).json({errorMessage: 'Could not update the specified zoo at this time', error: err}));
 })
 
 const port = 3300;
