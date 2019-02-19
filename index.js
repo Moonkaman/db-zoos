@@ -88,6 +88,20 @@ server.get('/api/bears/:id', (req, res) => {
     .catch(err => res.status(500).json({errorMessage: 'Could not retrieve the specified bear at this time', error: err}));
 })
 
+server.post('/api/bears', (req, res) => {
+  if(req.body.name){
+    db('bears').insert(req.body)
+      .then(id => {
+        db('bears').where({id: id[0]}).first()
+          .then(newBear => res.status(201).json(newBear))
+          .catch(err => res.status(500).json({errorMessage: 'Could not retrieve the new bear at this time', error: err}));
+      })
+      .catch(err => res.status(500).json({errorMessage: 'Could not create a bear at this time', error: err}));
+  } else {
+    res.status(400).json({errorMessage: 'Please provide a name'})
+  }
+})
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
