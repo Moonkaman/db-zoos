@@ -74,6 +74,14 @@ server.delete('/api/zoos/:id', (req, res) => {
     .catch(err => res.status(500).json({errorMessage: 'Could not update the specified zoo at this time', error: err}));
 })
 
+//----------------------------------------- Bears Endpoints --------------------------------------------\\
+
+server.get('/api/bears', (req, res) => {
+  db('bears')
+    .then(bears => res.status(200).json(bears))
+    .catch(err => res.status(500).json({errorMessage: 'Could not retrieve the list of bears at this time', error: err}));
+})
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
